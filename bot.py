@@ -8,13 +8,13 @@ from groq import Groq
 load_dotenv()
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
-# 1. Define the Checklist (The State)
+# checklist model to track the state of the conversation
 class SalesChecklist(BaseModel):
     device_type: Optional[str] = None
     brand: Optional[str] = None
     color: Optional[str] = None
     is_complete: bool = False
-    agent_reply: str
+    
 
 # 2. System Instructions
 SYSTEM_PROMPT = """
@@ -22,7 +22,7 @@ You are a CLI sales assistant. Your job is to collect 3 details from the user:
 1. Device Type (phone, tablet, laptop, etc.)
 2. Brand
 3. Color
-
+Capitalise all fields first letter, appopriately in the JSON output.
 Based on the conversation, update the JSON checklist:
 - If a field is unknown, leave it null.
 - Use the 'agent_reply' field to ask the user for missing information in a friendly way.
@@ -58,16 +58,15 @@ def main():
         # 4. State Management & Observability
         json_output = response.choices[0].message.content
         state = SalesChecklist.model_validate_json(json_output)
-        
+ 
         # Add the agent's generated reply to memory so it remembers the chat
-        messages.append({"role": "assistant", "content": state.agent_reply})
+
         
         # DEBUG VIEW: This is observability. It lets you see the bot's "brain" working.
         print(f"\n[DEBUG STATE] -> Type: {state.device_type} | Brand: {state.brand} | Color: {state.color} | Complete: {state.is_complete}")
         
         # The actual UI output
-        print(f"Bot: {state.agent_reply}\n")
-        
+
         if state.is_complete:
             break
 
