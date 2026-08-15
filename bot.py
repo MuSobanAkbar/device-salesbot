@@ -49,9 +49,9 @@ def main():
         
         # 3. Call the LLM with Structured Outputs
         response = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
+            model="llama-3.1-8b-instant",
             messages=messages,
-            response_format={"type": "json_object"}, # Forces JSON output
+            response_format={"type": "json_object"}, # this part forces the response format
             temperature=0.1 
         )
         
