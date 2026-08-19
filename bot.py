@@ -49,7 +49,7 @@ def main():
         
         # 3. Call the LLM with Structured Outputs
         response = client.chat.completions.create(
-            model="llama-3.1-8b-instant",
+            model="openai/gpt-oss-120b",
             messages=messages,
             response_format={"type": "json_object"}, # this part forces the response format
             temperature=0.1 
